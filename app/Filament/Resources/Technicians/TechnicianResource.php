@@ -84,7 +84,7 @@ class TechnicianResource extends Resource
 
     public static function canDeleteAny(): bool
     {
-        return auth()->user()?->isAdmin() ?? false;
+        return auth()->user()?->canManageTechnicians() ?? false;
     }
 
     public static function getRelations(): array

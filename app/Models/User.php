@@ -28,8 +28,6 @@ class User extends Authenticatable implements FilamentUser
 
     public const ROLE_SUPPORT = 'support';
 
-    public const ROLE_NOC = 'noc';
-
     public const ROLE_TECHNICIAN = 'technician';
 
     public const ROLE_CUSTOMER = 'customer';
@@ -43,9 +41,6 @@ class User extends Authenticatable implements FilamentUser
             self::ROLE_ADMIN => 'Admin',
             self::ROLE_MANAGER => 'Manager',
             self::ROLE_SUPPORT => 'Support',
-            self::ROLE_NOC => 'NOC',
-            self::ROLE_TECHNICIAN => 'Technician',
-            self::ROLE_CUSTOMER => 'Customer',
         ];
     }
 
@@ -58,8 +53,6 @@ class User extends Authenticatable implements FilamentUser
             self::ROLE_ADMIN,
             self::ROLE_MANAGER,
             self::ROLE_SUPPORT,
-            self::ROLE_NOC,
-            self::ROLE_TECHNICIAN,
         ];
     }
 
@@ -72,7 +65,17 @@ class User extends Authenticatable implements FilamentUser
             self::ROLE_ADMIN,
             self::ROLE_MANAGER,
             self::ROLE_SUPPORT,
-            self::ROLE_NOC,
+        ];
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public static function assetManagementRoles(): array
+    {
+        return [
+            self::ROLE_ADMIN,
+            self::ROLE_MANAGER,
         ];
     }
 
@@ -81,12 +84,7 @@ class User extends Authenticatable implements FilamentUser
      */
     public static function ticketAssignmentRoles(): array
     {
-        return [
-            self::ROLE_ADMIN,
-            self::ROLE_MANAGER,
-            self::ROLE_SUPPORT,
-            self::ROLE_NOC,
-        ];
+        return self::assetManagementRoles();
     }
 
     /**
@@ -98,7 +96,6 @@ class User extends Authenticatable implements FilamentUser
             self::ROLE_ADMIN,
             self::ROLE_MANAGER,
             self::ROLE_SUPPORT,
-            self::ROLE_NOC,
         ];
     }
 
@@ -107,10 +104,7 @@ class User extends Authenticatable implements FilamentUser
      */
     public static function ticketCreateRoles(): array
     {
-        return [
-            self::ROLE_ADMIN,
-            self::ROLE_SUPPORT,
-        ];
+        return self::assetManagementRoles();
     }
 
     /**
@@ -118,11 +112,7 @@ class User extends Authenticatable implements FilamentUser
      */
     public static function ticketUpdateRoles(): array
     {
-        return [
-            self::ROLE_ADMIN,
-            self::ROLE_SUPPORT,
-            self::ROLE_NOC,
-        ];
+        return self::assetManagementRoles();
     }
 
     /**
@@ -130,11 +120,7 @@ class User extends Authenticatable implements FilamentUser
      */
     public static function ticketCloseRoles(): array
     {
-        return [
-            self::ROLE_ADMIN,
-            self::ROLE_MANAGER,
-            self::ROLE_SUPPORT,
-        ];
+        return self::assetManagementRoles();
     }
 
     /**
@@ -142,10 +128,7 @@ class User extends Authenticatable implements FilamentUser
      */
     public static function jobPhotoUploadRoles(): array
     {
-        return [
-            self::ROLE_ADMIN,
-            self::ROLE_SUPPORT,
-        ];
+        return self::assetManagementRoles();
     }
 
     public function technician(): HasOne
@@ -196,11 +179,6 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasRole(self::ROLE_SUPPORT);
     }
 
-    public function isNoc(): bool
-    {
-        return $this->hasRole(self::ROLE_NOC);
-    }
-
     public function isTechnician(): bool
     {
         return $this->hasRole(self::ROLE_TECHNICIAN);
@@ -226,6 +204,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasAnyRole(self::ticketUpdateRoles());
     }
 
+    public function canManageTickets(): bool
+    {
+        return $this->hasAnyRole(self::assetManagementRoles());
+    }
+
     public function canCloseTickets(): bool
     {
         return $this->hasAnyRole(self::ticketCloseRoles());
@@ -233,7 +216,7 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAddTicketComments(): bool
     {
-        return $this->hasAnyRole(self::internalRoles());
+        return $this->canManageTickets();
     }
 
     public function canAssignTickets(): bool
@@ -248,7 +231,7 @@ class User extends Authenticatable implements FilamentUser
 
     public function canManageTechnicianJobs(): bool
     {
-        return $this->isAdmin();
+        return $this->hasAnyRole(self::assetManagementRoles());
     }
 
     public function canUploadJobPhotos(): bool
@@ -258,7 +241,7 @@ class User extends Authenticatable implements FilamentUser
 
     public function canCancelTechnicianJobs(): bool
     {
-        return $this->hasAnyRole(self::internalRoles());
+        return $this->canManageTechnicianJobs();
     }
 
     public function canViewCustomers(): bool
@@ -268,7 +251,7 @@ class User extends Authenticatable implements FilamentUser
 
     public function canManageCustomers(): bool
     {
-        return $this->isAdmin();
+        return $this->hasAnyRole(self::assetManagementRoles());
     }
 
     public function canViewTechnicians(): bool
@@ -278,7 +261,7 @@ class User extends Authenticatable implements FilamentUser
 
     public function canManageTechnicians(): bool
     {
-        return $this->isAdmin();
+        return $this->hasAnyRole(self::assetManagementRoles());
     }
 
     public function canViewCompanyDashboard(): bool

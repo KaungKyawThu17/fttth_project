@@ -101,7 +101,7 @@ class TicketResource extends Resource
 
     public static function canDeleteAny(): bool
     {
-        return auth()->user()?->isAdmin() ?? false;
+        return auth()->user()?->canManageTickets() ?? false;
     }
 
     /**
@@ -175,10 +175,10 @@ class TicketResource extends Resource
                 Select::make('technician_id')
                     ->label('Technician')
                     ->options(fn (): array => Technician::query()
-                            ->where('status', Technician::STATUS_ACTIVE)
-                            ->orderBy('name')
-                            ->pluck('name', 'id')
-                            ->all())
+                        ->where('status', Technician::STATUS_ACTIVE)
+                        ->orderBy('name')
+                        ->pluck('name', 'id')
+                        ->all())
                     ->searchable()
                     ->preload()
                     ->required(),

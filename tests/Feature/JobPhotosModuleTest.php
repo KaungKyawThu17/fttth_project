@@ -48,16 +48,16 @@ class JobPhotosModuleTest extends TestCase
             ->assertSeeLivewire(PhotosRelationManager::class);
     }
 
-    public function test_support_can_upload_job_photo_to_public_disk(): void
+    public function test_manager_can_upload_job_photo_to_public_disk(): void
     {
         Storage::fake('public');
 
-        $support = User::factory()->create([
-            'role' => User::ROLE_SUPPORT,
+        $manager = User::factory()->create([
+            'role' => User::ROLE_MANAGER,
         ]);
         $job = $this->createTechnicianJob();
 
-        Livewire::actingAs($support)
+        Livewire::actingAs($manager)
             ->test(PhotosRelationManager::class, [
                 'ownerRecord' => $job,
                 'pageClass' => ViewTechnicianJob::class,
@@ -102,9 +102,9 @@ class JobPhotosModuleTest extends TestCase
         ]);
     }
 
-    public function test_job_photo_policy_limits_uploads_to_support_admin_or_assigned_technician(): void
+    public function test_job_photo_policy_limits_uploads_to_managers_admins_or_assigned_technician(): void
     {
-        $policy = new JobPhotoPolicy();
+        $policy = new JobPhotoPolicy;
 
         $admin = User::factory()->create([
             'role' => User::ROLE_ADMIN,
@@ -114,9 +114,6 @@ class JobPhotosModuleTest extends TestCase
         ]);
         $manager = User::factory()->create([
             'role' => User::ROLE_MANAGER,
-        ]);
-        $noc = User::factory()->create([
-            'role' => User::ROLE_NOC,
         ]);
         $assignedTechnicianUser = User::factory()->create([
             'role' => User::ROLE_TECHNICIAN,
@@ -135,15 +132,15 @@ class JobPhotosModuleTest extends TestCase
         ]);
 
         $this->assertTrue($policy->createForJob($admin, $job));
-        $this->assertTrue($policy->createForJob($support, $job));
+        $this->assertTrue($policy->createForJob($manager, $job));
         $this->assertTrue($policy->createForJob($assignedTechnicianUser->refresh(), $job));
 
-        $this->assertFalse($policy->createForJob($manager, $job));
-        $this->assertFalse($policy->createForJob($noc, $job));
+        $this->assertFalse($policy->createForJob($support, $job));
         $this->assertFalse($policy->createForJob($otherTechnicianUser->refresh(), $job));
         $this->assertFalse($policy->view($otherTechnicianUser, $photo));
 
         $this->assertTrue($policy->delete($admin, $photo));
+        $this->assertTrue($policy->delete($manager, $photo));
         $this->assertFalse($policy->delete($support, $photo));
         $this->assertFalse($policy->delete($assignedTechnicianUser, $photo));
     }

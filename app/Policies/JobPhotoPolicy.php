@@ -28,22 +28,22 @@ class JobPhotoPolicy
 
     public function update(User $user, JobPhoto $jobPhoto): bool
     {
-        return $user->isAdmin();
+        return $user->canManageTechnicianJobs();
     }
 
     public function delete(User $user, JobPhoto $jobPhoto): bool
     {
-        return $user->isAdmin();
+        return $user->canManageTechnicianJobs();
     }
 
     public function restore(User $user, JobPhoto $jobPhoto): bool
     {
-        return $user->isAdmin();
+        return $user->canManageTechnicianJobs();
     }
 
     public function forceDelete(User $user, JobPhoto $jobPhoto): bool
     {
-        return $user->isAdmin();
+        return $user->canManageTechnicianJobs();
     }
 
     public function createForJob(User $user, TechnicianJob $technicianJob): bool

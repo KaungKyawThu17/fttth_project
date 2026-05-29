@@ -47,19 +47,19 @@ class TicketAssignmentService
 
             if ($authenticatedUser instanceof User) {
                 if (! $authenticatedUser->canAssignTickets()) {
-                    throw new AuthorizationException('Only admin, manager, support, or NOC users can assign technicians.');
+                    throw new AuthorizationException('Only admin or manager users can assign technicians.');
                 }
 
                 return $authenticatedUser;
             }
 
-            throw new AuthorizationException('Only admin, manager, support, or NOC users can assign technicians.');
+            throw new AuthorizationException('Only admin or manager users can assign technicians.');
         }
 
         $user = User::query()->find($assignedByUserId);
 
         if (! $user?->canAssignTickets()) {
-            throw new AuthorizationException('Only admin, manager, support, or NOC users can assign technicians.');
+            throw new AuthorizationException('Only admin or manager users can assign technicians.');
         }
 
         return $user;

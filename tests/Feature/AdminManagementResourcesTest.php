@@ -52,7 +52,26 @@ class AdminManagementResourcesTest extends TestCase
             ->assertOk();
     }
 
-    public function test_non_admin_cannot_manage_users_or_create_technicians(): void
+    public function test_manager_can_manage_technicians_but_not_users(): void
+    {
+        $manager = User::factory()->create([
+            'role' => User::ROLE_MANAGER,
+        ]);
+
+        $this->actingAs($manager)
+            ->get('/admin/users')
+            ->assertForbidden();
+
+        $this->actingAs($manager)
+            ->get('/admin/technicians')
+            ->assertOk();
+
+        $this->actingAs($manager)
+            ->get('/admin/technicians/create')
+            ->assertOk();
+    }
+
+    public function test_support_can_view_but_not_manage_administration_resources(): void
     {
         $support = User::factory()->create([
             'role' => User::ROLE_SUPPORT,

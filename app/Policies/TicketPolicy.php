@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\Ticket;
 use App\Models\TechnicianJob;
+use App\Models\Ticket;
 use App\Models\User;
 
 class TicketPolicy
@@ -30,17 +30,17 @@ class TicketPolicy
 
     public function delete(User $user, Ticket $ticket): bool
     {
-        return $user->isAdmin();
+        return $user->canManageTickets();
     }
 
     public function restore(User $user, Ticket $ticket): bool
     {
-        return $user->isAdmin();
+        return $user->canManageTickets();
     }
 
     public function forceDelete(User $user, Ticket $ticket): bool
     {
-        return $user->isAdmin();
+        return $user->canManageTickets();
     }
 
     public function assignTechnician(User $user, Ticket $ticket): bool

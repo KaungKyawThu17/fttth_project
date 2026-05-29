@@ -10,7 +10,7 @@ class TicketCommentPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->canAddTicketComments() || $user->technicianProfileId() !== null;
+        return $user->canViewTickets() || $user->technicianProfileId() !== null;
     }
 
     public function view(User $user, TicketComment $ticketComment): bool
@@ -32,17 +32,17 @@ class TicketCommentPolicy
 
     public function delete(User $user, TicketComment $ticketComment): bool
     {
-        return $user->isAdmin();
+        return $user->canManageTickets();
     }
 
     public function restore(User $user, TicketComment $ticketComment): bool
     {
-        return $user->isAdmin();
+        return $user->canManageTickets();
     }
 
     public function forceDelete(User $user, TicketComment $ticketComment): bool
     {
-        return $user->isAdmin();
+        return $user->canManageTickets();
     }
 
     public function createForTicket(User $user, Ticket $ticket): bool

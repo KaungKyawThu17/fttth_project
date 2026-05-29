@@ -43,16 +43,16 @@ class CustomerPolicy
 
     public function delete(User $user, Customer $customer): bool
     {
-        return $user->isAdmin();
+        return $user->canManageCustomers();
     }
 
     public function restore(User $user, Customer $customer): bool
     {
-        return $user->isAdmin();
+        return $user->canManageCustomers();
     }
 
     public function forceDelete(User $user, Customer $customer): bool
     {
-        return $user->isAdmin();
+        return $user->canManageCustomers();
     }
 }

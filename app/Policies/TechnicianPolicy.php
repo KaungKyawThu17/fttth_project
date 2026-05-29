@@ -30,16 +30,16 @@ class TechnicianPolicy
 
     public function delete(User $user, Technician $technician): bool
     {
-        return $user->isAdmin();
+        return $user->canManageTechnicians();
     }
 
     public function restore(User $user, Technician $technician): bool
     {
-        return $user->isAdmin();
+        return $user->canManageTechnicians();
     }
 
     public function forceDelete(User $user, Technician $technician): bool
     {
-        return $user->isAdmin();
+        return $user->canManageTechnicians();
     }
 }

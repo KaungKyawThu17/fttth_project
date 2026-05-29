@@ -113,7 +113,7 @@ class TechnicianJobResource extends Resource
 
     public static function canDeleteAny(): bool
     {
-        return auth()->user()?->isAdmin() ?? false;
+        return auth()->user()?->canManageTechnicianJobs() ?? false;
     }
 
     /**

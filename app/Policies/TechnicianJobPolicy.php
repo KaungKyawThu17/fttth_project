@@ -33,27 +33,27 @@ class TechnicianJobPolicy
 
     public function delete(User $user, TechnicianJob $technicianJob): bool
     {
-        return $user->isAdmin();
+        return $user->canManageTechnicianJobs();
     }
 
     public function restore(User $user, TechnicianJob $technicianJob): bool
     {
-        return $user->isAdmin();
+        return $user->canManageTechnicianJobs();
     }
 
     public function forceDelete(User $user, TechnicianJob $technicianJob): bool
     {
-        return $user->isAdmin();
+        return $user->canManageTechnicianJobs();
     }
 
     public function start(User $user, TechnicianJob $technicianJob): bool
     {
-        return $user->isAdmin() || $this->isAssignedTechnician($user, $technicianJob);
+        return $user->canManageTechnicianJobs() || $this->isAssignedTechnician($user, $technicianJob);
     }
 
     public function complete(User $user, TechnicianJob $technicianJob): bool
     {
-        return $user->isAdmin() || $this->isAssignedTechnician($user, $technicianJob);
+        return $user->canManageTechnicianJobs() || $this->isAssignedTechnician($user, $technicianJob);
     }
 
     public function cancel(User $user, TechnicianJob $technicianJob): bool
