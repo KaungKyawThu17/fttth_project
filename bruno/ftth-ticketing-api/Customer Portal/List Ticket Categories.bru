@@ -1,0 +1,27 @@
+meta {
+  name: List Ticket Categories
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/customer/ticket-categories
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+script:post-response {
+  const data = res.getBody();
+
+  if (data.data && data.data.length > 0) {
+    bru.setEnvVar("category_id", String(data.data[0].id));
+  }
+}

@@ -1,0 +1,31 @@
+meta {
+  name: List My Tickets
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/customer/tickets
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+params:query {
+  per_page: 15
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+script:post-response {
+  const data = res.getBody();
+
+  if (data.data && data.data.length > 0) {
+    bru.setEnvVar("ticket_id", String(data.data[0].id));
+  }
+}

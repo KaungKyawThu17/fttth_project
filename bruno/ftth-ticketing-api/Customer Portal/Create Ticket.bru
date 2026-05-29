@@ -1,0 +1,37 @@
+meta {
+  name: Create Ticket
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/customer/tickets
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "ticket_category_id": {{category_id}},
+    "subject": "Internet is down",
+    "description": "Customer cannot browse any website.",
+    "priority": "high"
+  }
+}
+
+script:post-response {
+  const data = res.getBody();
+
+  if (data.data && data.data.id) {
+    bru.setEnvVar("ticket_id", String(data.data.id));
+  }
+}

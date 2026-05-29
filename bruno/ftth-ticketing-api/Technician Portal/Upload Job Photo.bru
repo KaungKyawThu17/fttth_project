@@ -1,0 +1,32 @@
+meta {
+  name: Upload Job Photo
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_url}}/technician/jobs/{{job_id}}/photos
+  body: multipartForm
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:multipart-form {
+  photo: @file()
+  photo_type: issue
+}
+
+script:post-response {
+  const data = res.getBody();
+
+  if (data.data && data.data.id) {
+    bru.setEnvVar("photo_id", String(data.data.id));
+  }
+}

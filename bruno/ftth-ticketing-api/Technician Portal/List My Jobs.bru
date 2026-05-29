@@ -1,0 +1,31 @@
+meta {
+  name: List My Jobs
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/technician/jobs
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+params:query {
+  per_page: 15
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+script:post-response {
+  const data = res.getBody();
+
+  if (data.data && data.data.length > 0) {
+    bru.setEnvVar("job_id", String(data.data[0].id));
+  }
+}

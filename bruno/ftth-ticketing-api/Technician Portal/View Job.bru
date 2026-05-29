@@ -1,0 +1,19 @@
+meta {
+  name: View Job
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/technician/jobs/{{job_id}}
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{token}}
+}

@@ -1,0 +1,32 @@
+meta {
+  name: Login - Customer
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/login
+  body: json
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "phone": "09770001001",
+    "password": "password",
+    "device_name": "bruno-customer"
+  }
+}
+
+script:post-response {
+  const data = res.getBody();
+
+  if (data.access_token) {
+    bru.setEnvVar("token", data.access_token);
+  }
+}

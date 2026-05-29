@@ -1,0 +1,26 @@
+meta {
+  name: Start Job
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/technician/jobs/{{job_id}}/start
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "estimated_arrival_at": "2026-05-29"
+  }
+}

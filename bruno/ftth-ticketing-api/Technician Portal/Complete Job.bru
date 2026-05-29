@@ -1,0 +1,27 @@
+meta {
+  name: Complete Job
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{base_url}}/technician/jobs/{{job_id}}/complete
+  body: json
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "finding_note": "Fiber connector was dirty.",
+    "action_taken": "Cleaned connector and verified link."
+  }
+}

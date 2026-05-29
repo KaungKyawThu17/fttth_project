@@ -1,0 +1,19 @@
+meta {
+  name: View Ticket
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/customer/tickets/{{ticket_id}}
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/json
+}
+
+auth:bearer {
+  token: {{token}}
+}
