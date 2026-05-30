@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 class StoreCustomerTicketRequest extends FormRequest
 {
@@ -38,5 +39,38 @@ class StoreCustomerTicketRequest extends FormRequest
             'description' => ['required', 'string', 'max:5000'],
             'priority' => ['nullable', Rule::in(array_keys(Ticket::priorityOptions()))],
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator): void {
+            $user = $this->user();
+
+            if (! $user instanceof User) {
+                return;
+            }
+
+            $customerId = $user->customerProfileId();
+
+            if ($customerId === null) {
+                return;
+            }
+
+            $hasActiveTicket = Ticket::query()
+                ->where('customer_id', $customerId)
+                ->whereIn('status', [
+                    Ticket::STATUS_OPEN,
+                    Ticket::STATUS_ASSIGNED,
+                    Ticket::STATUS_IN_PROGRESS,
+                ])
+                ->exists();
+
+            if ($hasActiveTicket) {
+                $validator->errors()->add(
+                    'ticket',
+                    'You already have an active ticket. Please wait until it is resolved before creating a new one.',
+                );
+            }
+        });
     }
 }

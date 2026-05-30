@@ -79,6 +79,49 @@ class ApiPortalTest extends TestCase
         ]);
     }
 
+    public function test_customer_cannot_create_new_ticket_while_active_ticket_exists(): void
+    {
+        $customerUser = User::factory()->create([
+            'role' => User::ROLE_CUSTOMER,
+        ]);
+        $customer = $this->createCustomer($customerUser);
+        $category = TicketCategory::query()->create([
+            'name' => 'Connection Drop',
+            'is_active' => true,
+        ]);
+
+        $token = $customerUser->issueApiToken('test');
+        $headers = $this->bearerHeaders($token);
+
+        $this->postJson('/api/customer/tickets', [
+            'ticket_category_id' => $category->getKey(),
+            'subject' => 'First issue',
+            'description' => 'Internet is down.',
+        ], $headers)
+            ->assertCreated();
+
+        $this->postJson('/api/customer/tickets', [
+            'ticket_category_id' => $category->getKey(),
+            'subject' => 'Second issue',
+            'description' => 'Still having problems.',
+        ], $headers)
+            ->assertUnprocessable()
+            ->assertJsonValidationErrorFor('ticket');
+
+        $customer->tickets()->first()->forceFill([
+            'status' => Ticket::STATUS_CLOSED,
+            'resolved_at' => now(),
+            'closed_at' => now(),
+        ])->save();
+
+        $this->postJson('/api/customer/tickets', [
+            'ticket_category_id' => $category->getKey(),
+            'subject' => 'Third issue',
+            'description' => 'New problem after resolution.',
+        ], $headers)
+            ->assertCreated();
+    }
+
     public function test_technician_can_manage_own_job_lifecycle_through_api(): void
     {
         Storage::fake('public');
