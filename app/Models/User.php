@@ -53,6 +53,7 @@ class User extends Authenticatable implements FilamentUser
             self::ROLE_ADMIN,
             self::ROLE_MANAGER,
             self::ROLE_SUPPORT,
+            self::ROLE_TECHNICIAN,
         ];
     }
 
@@ -96,6 +97,7 @@ class User extends Authenticatable implements FilamentUser
             self::ROLE_ADMIN,
             self::ROLE_MANAGER,
             self::ROLE_SUPPORT,
+            self::ROLE_TECHNICIAN,
         ];
     }
 

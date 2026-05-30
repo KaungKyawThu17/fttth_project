@@ -45,9 +45,9 @@ class RoleAccessControlTest extends TestCase
         $this->assertFalse($support->canUploadJobPhotos());
 
         $this->assertTrue($technician->isTechnician());
-        $this->assertFalse($technician->hasAnyRole(User::panelAccessRoles()));
+        $this->assertTrue($technician->hasAnyRole(User::panelAccessRoles()));
         $this->assertFalse($technician->canAssignTickets());
-        $this->assertFalse($technician->canViewCompanyDashboard());
+        $this->assertTrue($technician->canViewCompanyDashboard());
     }
 
     public function test_ticket_policy_hides_full_ticket_resource_from_technicians(): void
