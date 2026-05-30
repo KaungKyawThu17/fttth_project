@@ -38,6 +38,12 @@ class StoreCustomerTicketRequest extends FormRequest
             'subject' => ['required', 'string', 'max:150'],
             'description' => ['required', 'string', 'max:5000'],
             'priority' => ['nullable', Rule::in(array_keys(Ticket::priorityOptions()))],
+            'device_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('devices', 'id')
+                    ->where('customer_id', (int) ($this->user()?->customerProfileId() ?? 0)),
+            ],
         ];
     }
 

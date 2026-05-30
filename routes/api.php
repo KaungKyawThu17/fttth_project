@@ -15,6 +15,7 @@ Route::middleware('auth:api')->group(function (): void {
 
     Route::prefix('customer')->group(function (): void {
         Route::get('/ticket-categories', [CustomerTicketController::class, 'categories']);
+        Route::get('/devices', [CustomerTicketController::class, 'devices']);
         Route::get('/tickets', [CustomerTicketController::class, 'index']);
         Route::post('/tickets', [CustomerTicketController::class, 'store']);
         Route::get('/tickets/{ticket}', [CustomerTicketController::class, 'show']);

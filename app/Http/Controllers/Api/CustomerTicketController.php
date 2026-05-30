@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StoreCustomerTicketRequest;
+use App\Http\Resources\Api\DeviceResource;
 use App\Http\Resources\Api\TicketCategoryResource;
 use App\Http\Resources\Api\TicketResource;
 use App\Models\Customer;
@@ -32,7 +33,7 @@ class CustomerTicketController extends Controller
 
         return TicketResource::collection(
             $customer->tickets()
-                ->with(['category', 'technician', 'activeTechnicianJob.photos'])
+                ->with(['category', 'technician', 'activeTechnicianJob.photos', 'device'])
                 ->orderByDesc('reported_at')
                 ->orderByDesc('id')
                 ->paginate($this->perPage($request))
@@ -53,9 +54,10 @@ class CustomerTicketController extends Controller
             'priority' => $data['priority'] ?? Ticket::PRIORITY_MEDIUM,
             'status' => Ticket::STATUS_OPEN,
             'reported_at' => now(),
+            'device_id' => $data['device_id'] ?? null,
         ]);
 
-        return (new TicketResource($ticket->load(['category', 'technician', 'activeTechnicianJob.photos'])))
+        return (new TicketResource($ticket->load(['category', 'technician', 'activeTechnicianJob.photos', 'device'])))
             ->response()
             ->setStatusCode(201);
     }
@@ -66,7 +68,16 @@ class CustomerTicketController extends Controller
 
         abort_unless((int) $ticket->customer_id === (int) $customer->getKey(), 403);
 
-        return new TicketResource($ticket->load(['category', 'technician', 'activeTechnicianJob.photos']));
+        return new TicketResource($ticket->load(['category', 'technician', 'activeTechnicianJob.photos', 'device']));
+    }
+
+    public function devices(Request $request): AnonymousResourceCollection
+    {
+        $customer = $this->customerFromRequest($request);
+
+        return DeviceResource::collection(
+            $customer->devices()->orderBy('onu_serial_number')->get()
+        );
     }
 
     protected function customerFromRequest(Request $request): Customer

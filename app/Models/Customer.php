@@ -48,4 +48,9 @@ class Customer extends Model
     {
         return $this->hasOne(ChurnPrediction::class);
     }
+
+    public function devices(): HasMany
+    {
+        return $this->hasMany(Device::class);
+    }
 }

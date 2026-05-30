@@ -27,6 +27,7 @@ use InvalidArgumentException;
     'resolved_at',
     'closed_at',
     'resolution_note',
+    'device_id',
 ])]
 class Ticket extends Model
 {
@@ -120,6 +121,11 @@ class Ticket extends Model
         return $this->hasOne(TechnicianJob::class)
             ->whereIn('status', TechnicianJob::activeStatuses())
             ->latestOfMany();
+    }
+
+    public function device(): BelongsTo
+    {
+        return $this->belongsTo(Device::class);
     }
 
     public function isOpen(): bool

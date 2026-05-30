@@ -38,6 +38,13 @@ class TicketResource extends JsonResource
                 'phone' => $this->technician->phone,
             ] : null),
             'active_job' => new TechnicianJobResource($this->whenLoaded('activeTechnicianJob')),
+            'device' => $this->whenLoaded('device', fn (): ?array => $this->device ? [
+                'id' => $this->device->id,
+                'onu_serial_number' => $this->device->onu_serial_number,
+                'onu_model' => $this->device->onu_model,
+                'mac_address' => $this->device->mac_address,
+                'router_model' => $this->device->router_model,
+            ] : null),
         ];
     }
 }
