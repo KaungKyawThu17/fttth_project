@@ -66,10 +66,6 @@ class TicketsTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                SelectFilter::make('status')
-                    ->options(Ticket::statusOptions())
-                    ->multiple()
-                    ->native(false),
                 SelectFilter::make('priority')
                     ->options(Ticket::priorityOptions())
                     ->multiple()
