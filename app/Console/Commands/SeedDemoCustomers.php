@@ -17,13 +17,19 @@ class SeedDemoCustomers extends Command
     public function handle(): int
     {
         $count = (int) $this->option('count');
-        $category = TicketCategory::query()->first();
 
-        if (! $category) {
-            $this->error('No ticket categories found. Run migrations and seeders first.');
+        $category = TicketCategory::query()->first() ?? TicketCategory::query()->create([
+            'name' => 'General',
+            'description' => 'General support category',
+            'is_active' => true,
+        ]);
 
-            return self::FAILURE;
-        }
+        $lastCode = Customer::query()
+            ->where('customer_code', 'like', 'DEMO%')
+            ->orderByDesc('customer_code')
+            ->value('customer_code');
+
+        $start = $lastCode ? (int) str_replace('DEMO', '', $lastCode) + 1 : 1;
 
         $existingCount = Customer::query()->count();
         $start = $existingCount + 1;
@@ -32,7 +38,7 @@ class SeedDemoCustomers extends Command
             $customer = Customer::query()->create([
                 'customer_code' => sprintf('DEMO%03d', $i),
                 'name' => "Demo Customer {$i}",
-                'phone' => '09' . str_pad((string) random_int(100000000, 999999999), 9, '0', STR_PAD_LEFT),
+                'phone' => '09'.str_pad((string) random_int(100000000, 999999999), 9, '0', STR_PAD_LEFT),
                 'address' => fake()->address(),
                 'township' => fake()->city(),
                 'city' => 'Yangon',
@@ -40,6 +46,9 @@ class SeedDemoCustomers extends Command
             ]);
 
             $ticketNo = sprintf('TKT-DEMO-%s-%03d', now()->format('YmdHis'), $i);
+
+            $reportedAt = now()->subDays(random_int(1, 30));
+            $resolvedAt = (clone $reportedAt)->addHours(random_int(1, 48));
 
             $ticket = Ticket::query()->create([
                 'customer_id' => $customer->getKey(),
@@ -49,9 +58,9 @@ class SeedDemoCustomers extends Command
                 'description' => fake()->paragraph(),
                 'priority' => fake()->randomElement([Ticket::PRIORITY_LOW, Ticket::PRIORITY_MEDIUM, Ticket::PRIORITY_HIGH]),
                 'status' => fake()->randomElement([Ticket::STATUS_OPEN, Ticket::STATUS_CLOSED]),
-                'reported_at' => now()->subDays(random_int(1, 30)),
-                'resolved_at' => now()->subDays(random_int(0, 5)),
-                'closed_at' => now()->subDays(random_int(0, 5)),
+                'reported_at' => $reportedAt,
+                'resolved_at' => $resolvedAt,
+                'closed_at' => (clone $resolvedAt)->addHours(random_int(1, 6)),
             ]);
 
             TicketComment::query()->create([
