@@ -22,6 +22,10 @@ return [
         'key' => env('RESEND_API_KEY'),
     ],
 
+    'churn_analysis' => [
+        'batch_predict_url' => env('CHURN_ANALYSIS_BATCH_URL', 'https://churn-analysis-ai.onrender.com/predict/batch'),
+    ],
+
     'ses' => [
         'key' => env('AWS_ACCESS_KEY_ID'),
         'secret' => env('AWS_SECRET_ACCESS_KEY'),

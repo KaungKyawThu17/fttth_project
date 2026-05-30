@@ -5,8 +5,8 @@ namespace App\Filament\Resources\Technicians\Schemas;
 use App\Models\Technician;
 use App\Models\User;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 

@@ -2,11 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Resources\Tickets\TicketResource;
 use App\Filament\Widgets\ComplaintCategoryReport;
 use App\Filament\Widgets\TechnicianWorkloadReport;
 use App\Filament\Widgets\TicketStatsOverview;
 use App\Filament\Widgets\TodayTechnicianJobs;
-use App\Filament\Resources\Tickets\TicketResource;
 use App\Models\Customer;
 use App\Models\Ticket;
 use App\Models\TicketCategory;
