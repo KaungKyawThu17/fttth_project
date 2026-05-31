@@ -24,6 +24,10 @@ class UserResource extends JsonResource
                 'customer_code' => $this->customer->customer_code,
                 'name' => $this->customer->name,
                 'phone' => $this->customer->phone,
+                'address' => $this->customer->address,
+                'township' => $this->customer->township,
+                'city' => $this->customer->city,
+                'package_id' => $this->customer->package_id,
                 'status' => $this->customer->status,
             ] : null),
             'technician' => $this->whenLoaded('technician', fn (): ?array => $this->technician ? [
